@@ -3,26 +3,29 @@ name: Healthcare Portal CI
 
 on:
   push:
-    branches: [main, feature/healthcare-portal-ui]
+    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  healthcare-check:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check project files
+      - name: Check required files
         run: |
           test -f index.html
           test -f README.md
-          echo "Project files verified"
+          test -f Dockerfile
 
-      - name: Basic HTML check
+      - name: Check HTML structure
         run: |
-          grep -qi "&lt;html" index.html
-          grep -qi "&lt;/html" index.html
-          echo "HTML structure check passed"
+          grep -qi "<html" index.html
+          grep -qi "</html>" index.html
+
+      - name: Build Docker image
+        run: docker build -t healthcare-portal .
+
